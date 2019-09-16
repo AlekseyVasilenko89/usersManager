@@ -10,7 +10,7 @@
 <br>
 <br>
 <br>
-<form action="login" method="post">
+<form action="login" method="get">
     Login: <input type="text" name="name"/>
     Password: <input type="password" name="password"/>
     <input type="submit" value="Войти">
