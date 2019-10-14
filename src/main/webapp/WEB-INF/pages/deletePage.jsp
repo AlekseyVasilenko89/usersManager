@@ -7,9 +7,8 @@
 
 Вы действительно хотите удалить пользователя ${user.id}?
 
-<form action="delete" method="post">
+<form action="/delete" method="post">
 <input type="hidden" name="id" value="${user.id}">
-<input type="hidden" name="_method" value="delete">
 <input type="submit" value="Удалить">
 </form>
 

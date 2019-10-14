@@ -1,14 +1,26 @@
 package preProject.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import preProject.dao.UserDAO;
-import preProject.dao.UserDAOImpl;
 import preProject.model.User;
 
 import java.util.List;
 
-public class UserServiceImpl implements UserService {
-    private UserDAO userDAO = new UserDAOImpl();
+@Service
+@Transactional
+public class UserServiceImpl implements UserService, UserDetailsService {
+
+    private UserDAO userDAO;
+
+    @Autowired
+    public UserServiceImpl(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Override
     public void add(User user) {
@@ -16,12 +28,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public List<User> getAll() {
         return userDAO.getAll();
     }
 
     @Override
+    @Transactional
     public User getById(int id) {
         return userDAO.getById(id);
     }
@@ -36,8 +48,9 @@ public class UserServiceImpl implements UserService {
         userDAO.remove(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public User getByNameAndPassword(String name, String password) {
-        return null;
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userDAO.getUserByUsername(username);
     }
 }

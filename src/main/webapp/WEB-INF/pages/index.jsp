@@ -10,8 +10,8 @@
 <br>
 <br>
 <br>
-<form action="login" method="get">
-    Login: <input type="text" name="name"/>
+<form action="showUsers" method="post">
+    Login: <input type="text" name="username"/>
     Password: <input type="password" name="password"/>
     <input type="submit" value="Войти">
 </form>

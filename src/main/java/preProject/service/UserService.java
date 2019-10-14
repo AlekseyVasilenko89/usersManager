@@ -1,5 +1,6 @@
 package preProject.service;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import preProject.model.User;
 
 import java.util.List;
@@ -15,6 +16,4 @@ public interface UserService {
     void update(User user);
 
     void remove(User user);
-
-    User getByNameAndPassword (String name, String password);
 }

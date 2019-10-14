@@ -2,55 +2,62 @@ package preProject.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import preProject.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
+@Repository
+@Transactional
 public class UserDAOImpl implements UserDAO {
-
-    private static final AtomicInteger AUTO_ID = new AtomicInteger(0);
-    private static Map<Integer, User> users = new HashMap<>();
-
     private SessionFactory sessionFactory;
 
     @Autowired
-    public void setSessionFactory(SessionFactory sessionFactory) {
+    public UserDAOImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
     public void add(User user) {
-        user.setId(AUTO_ID.getAndIncrement());
-        users.put(user.getId(), user);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(user);
     }
 
+    @Override
     public List<User> getAll() {
+        List<User> users = null;
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from spring_users").list();
+        users = session.createQuery("from User").getResultList();
+        return users;
     }
 
     @Override
     public User getById(int id) {
-        return users.get(id);
+        User user;
+        Session session = sessionFactory.getCurrentSession();
+        user = session.get(User.class, id);
+        user.getId();
+        return user;
     }
 
     @Override
     public void update(User user) {
-        users.put(user.getId(), user);
+        Session session = sessionFactory.getCurrentSession();
+        session.update(user);
     }
 
     @Override
     public void remove(User user) {
-        users.remove(user.getId());
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(user);
     }
 
     @Override
-    public User getByNameAndPassword(String name, String password) {
-        return null;
+    public User getUserByUsername(String username) {
+        return sessionFactory.getCurrentSession().createNativeQuery("select * from users where name = :username", User.class)
+                .setParameter("username", username).getSingleResult();
     }
 }

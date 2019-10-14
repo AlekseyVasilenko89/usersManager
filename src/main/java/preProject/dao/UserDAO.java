@@ -1,5 +1,6 @@
 package preProject.dao;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import preProject.model.User;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 public interface UserDAO {
     void add(User user);
 
-    List<User> getAll();
+    List getAll();
 
     User getById(int id);
 
@@ -15,5 +16,6 @@ public interface UserDAO {
 
     void remove(User user);
 
-    User getByNameAndPassword(String name, String password);
+    User getUserByUsername(String name);
+
 }

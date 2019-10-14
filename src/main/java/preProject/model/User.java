@@ -1,63 +1,60 @@
 package preProject.model;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "spring_users")
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
 
     @Id
-    @Column(table = "id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(table = "name")
+    @Column(name = "name")
     private String name;
 
-    @Column(table = "age")
+    @Column(name = "age")
     private Integer age;
 
-    @Column(table = "password")
+    @Column(name = "password")
     private String password;
 
-    @Column(table = "role")
-    private String role;
+    @ManyToMany
+    @JoinTable (name="users_roles",
+            joinColumns=@JoinColumn (name="users_id"),
+            inverseJoinColumns=@JoinColumn(name="roles_id"))
+    private List<UserRole> userRoles;
 
     public User() {
     }
 
-    public User(String name, Integer age, String password, String role) {
+    public User(String name, Integer age, String password, List<UserRole> roles) {
         this.name = name;
         this.age = age;
         this.password = password;
-        this.role = role;
-    }
-
-    public User(Integer id, String name, Integer age, String password, String role) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.password = password;
-        this.role = role;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName() {
+    @Override
+    public String getUsername() {
         return name;
     }
-
-    public void setName(String name) {
+    public void setUsername(String name) {
         this.name = name;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -69,16 +66,42 @@ public class User {
         return password;
     }
 
+
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public List<UserRole> getAuthorities() {
+        return userRoles;
+    }
+
+    public void setAuthorities(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
     }
 
     @Override
@@ -87,9 +110,8 @@ public class User {
         if (!(o instanceof User)) return false;
         User user = (User) o;
         return getAge() == user.getAge() &&
-                getName().equals(user.getName()) &&
-                getPassword().equals(user.getPassword())&&
-                getRole().equals(user.getRole());
+                getUsername().equals(user.getUsername()) &&
+                getPassword().equals(user.getPassword());
     }
 
     @Override
@@ -103,8 +125,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                '}';
+                ", password='" + password + '\''
+                + '}';
     }
 }
